@@ -1,0 +1,47 @@
+---
+description: Run the compliance checker against marketing copy
+alwaysApply: true
+---
+
+# Marketing Compliance Checker
+
+This project evaluates financial marketing copy against EU MiFID II regulations.
+
+## How to run a compliance check
+
+When the user asks to evaluate, check, or review marketing copy:
+
+```bash
+# From a file
+uv run scripts/check_compliance.py --file <path-to-file>
+
+# From inline text
+uv run scripts/check_compliance.py --text "<marketing copy>"
+```
+
+The script requires `OPENAI_API_KEY` (set via `.env`, environment variable, or `--api-key`).
+
+Use `--file` for multi-line copy. Use `--text` for short single-line input.
+
+The output is JSON with: `overall_verdict` (PASS/FAIL/REVIEW_REQUIRED), `summary`, and per-rule `results`.
+
+## How to re-extract rules
+
+When the user asks to extract or regenerate rules from regulatory sources:
+
+```bash
+uv run scripts/extract_rules.py
+```
+
+This reads `data/raw_sources/*.md` and writes `data/processed/rules.json`.
+
+## Project structure
+
+- `scripts/check_compliance.py` — CLI entry point for evaluation
+- `scripts/extract_rules.py` — CLI entry point for rule extraction
+- `src/extractor/` — rule extraction pipeline (prompts, models, pipeline)
+- `src/evaluator/` — compliance evaluation pipeline (prompts, models, evaluator, pipeline)
+- `src/models.py` — shared Pydantic models (MarketingRule, EvaluationScope)
+- `src/llm_client.py` — OpenAI wrapper
+- `data/processed/rules.json` — pre-extracted rules (32 rules)
+- `examples/` — sample marketing copy (compliant, borderline, non-compliant)
