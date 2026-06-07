@@ -60,12 +60,12 @@ To remove generated rules and start fresh: `make clean` (deletes `data/processed
 
 1. **Rule extraction** — Raw EU regulation text (markdown with YAML frontmatter) is split by article/paragraph and sent section-by-section to the LLM. The extraction prompt filters for text-content-evaluable marketing rules only, skipping operational obligations (durable medium, staff remuneration, timing, font/layout). Output: 32 structured rules in `data/processed/rules.json`, each with regulatory citation, exact source quote, severity, and evaluation scope.
 
-2. **Compliance evaluation** — Marketing copy is checked against all 32 rules in batches. Each rule gets a four-state verdict (`PASS`, `FAIL`, `REVIEW_REQUIRED`, `NOT_APPLICABLE`) with reasoning, matched text, and confidence score. A final LLM call generates a plain-English summary.
+2. **Compliance evaluation** — Marketing copy is checked against all 32 rules in batches. Each rule gets a verdict with reasoning, matched text, and confidence score. Text-evaluable rules can be `PASS`, `FAIL`, `REVIEW_REQUIRED`, or `NOT_APPLICABLE`; external-verification rules are only `NOT_APPLICABLE` or `REVIEW_REQUIRED`. A final LLM call generates a plain-English summary.
 
 Not every rule can be judged from the marketing text alone. For example, "is the 67% figure current?" requires outside evidence. To handle this, each rule is tagged with an **evaluation scope**:
 
-   - **`text_evaluable`** — The copy is enough to decide PASS, FAIL, or NOT_APPLICABLE.
-   - **`external_verification`** — The evaluator can spot the *claim* but can't verify it, so it flags `REVIEW_REQUIRED` instead of guessing.
+   - **`text_evaluable`** — The copy is enough to decide `PASS`, `FAIL`, `REVIEW_REQUIRED`, or `NOT_APPLICABLE`. `REVIEW_REQUIRED` is used when the text itself is genuinely ambiguous, not when external evidence is missing.
+   - **`external_verification`** — The evaluator can spot the *claim* in the copy but cannot verify it without outside evidence, so it returns `NOT_APPLICABLE` (trigger absent) or `REVIEW_REQUIRED` (trigger present).
 
    Each scope uses a different evaluation prompt. External-verification rules only trigger when the relevant claim is actually present in the text — a generic risk warning won't cause every external rule to fire.
 
@@ -95,7 +95,7 @@ Sources follow **CySEC Circular C574**, which names the specific MiFID II provis
 
 2. **Strict filtering in the extraction prompt.** The prompt now tells the LLM to skip non-marketing sections and only extract relevant rules, cutting the rule count in half and improving focus.
 
-3. **Two separate evaluation prompts for text vs. external rules.** Initially all rules went through one prompt, and external-verification rules always came back as `REVIEW_REQUIRED` regardless of whether they were triggered. Splitting into two prompts with different instructions (text rules: PASS/FAIL/NOT_APPLICABLE; external rules: NOT_APPLICABLE or REVIEW_REQUIRED based on trigger presence) eliminated false flags.
+3. **Two separate evaluation prompts for text vs. external rules.** Initially all rules went through one prompt, and external-verification rules always came back as `REVIEW_REQUIRED` regardless of whether they were triggered. Splitting into two prompts with different instructions (text rules: PASS/FAIL/REVIEW_REQUIRED/NOT_APPLICABLE; external rules: NOT_APPLICABLE or REVIEW_REQUIRED based on trigger presence) eliminated false flags.
 
 4. **Plain-text-only evaluation scope.** Rules about font size, visual prominence, or page layout are excluded at extraction time. The evaluator cannot see formatting, so guessing about it would produce unreliable results.
 
