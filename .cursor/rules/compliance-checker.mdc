@@ -44,4 +44,3 @@ This reads `data/raw_sources/*.md` and writes `data/processed/rules.json`.
 - `src/models.py` — shared Pydantic models (MarketingRule, EvaluationScope)
 - `src/llm_client.py` — OpenAI wrapper
 - `data/processed/rules.json` — pre-extracted rules (32 rules)
-- `examples/` — sample marketing copy (compliant, borderline, non-compliant)

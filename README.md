@@ -23,7 +23,7 @@ Requires [uv](https://docs.astral.sh/uv/) (Python 3.13+) and an [OpenAI API key]
 ```bash
 cp .env.example .env          # add your OPENAI_API_KEY
 make install
-make evaluate FILE=examples/non_compliant_copy.txt
+make evaluate TEXT="Install our app and get rich tomorrow"
 ```
 
 See `make help` for all available commands, or run `uv run scripts/check_compliance.py` for full usage guide.
@@ -35,8 +35,8 @@ The repo ships with pre-extracted rules in `data/processed/rules.json`. You can 
 **Evaluate marketing copy** (uses existing `rules.json`):
 
 ```bash
-make evaluate FILE=examples/non_compliant_copy.txt
-make evaluate TEXT="Follow me here if you want to get rich"
+make evaluate TEXT="Install our app and get rich tomorrow"
+make evaluate FILE=path/to/your_copy.txt
 ```
 
 **Regenerate rules** (optional — reads `data/raw_sources/*.md`, calls the LLM, overwrites `data/processed/rules.json`):
@@ -49,7 +49,7 @@ make extract
 Then evaluate against the new rules:
 
 ```bash
-make evaluate FILE=examples/compliant_copy.txt
+make evaluate TEXT="Your marketing copy here"
 ```
 
 To remove generated rules and start fresh: `make clean` (deletes `data/processed/rules.json`; run `make extract` to recreate).

@@ -3,8 +3,8 @@
 
 Usage:
     uv run scripts/check_compliance.py --text "Your marketing copy here"
-    uv run scripts/check_compliance.py --file examples/non_compliant_copy.txt
-    OPENAI_API_KEY=sk-... uv run scripts/check_compliance.py --file copy.txt
+    uv run scripts/check_compliance.py --file path/to/copy.txt
+    OPENAI_API_KEY=sk-... uv run scripts/check_compliance.py --text "Your copy"
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ USAGE_GUIDE = f"""
 
   Usage:
     uv run scripts/check_compliance.py --text "Install our app and get rich tomorrow"
-    uv run scripts/check_compliance.py --file examples/non_compliant_copy.txt
+    uv run scripts/check_compliance.py --file path/to/copy.txt
 
   API key (one of):
     export OPENAI_API_KEY=sk-...                          # environment variable
@@ -39,9 +39,8 @@ USAGE_GUIDE = f"""
     --batch-size N     Rules per LLM call (default: {DEFAULT_BATCH_SIZE})
 
   Examples:
-    uv run scripts/check_compliance.py --file examples/compliant_copy.txt
-    uv run scripts/check_compliance.py --file examples/non_compliant_copy.txt
     uv run scripts/check_compliance.py --text "Guaranteed 50%% returns, zero risk!"
+    uv run scripts/check_compliance.py --file path/to/copy.txt
 """
 
 

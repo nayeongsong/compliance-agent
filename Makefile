@@ -12,8 +12,8 @@ help:
 	@echo "  make clean                           - remove generated rules"
 	@echo ""
 	@echo "  Or run the script directly:"
-	@echo "  uv run scripts/check_compliance.py --file examples/compliant_copy.txt"
 	@echo "  uv run scripts/check_compliance.py --text 'Your copy here'"
+	@echo "  uv run scripts/check_compliance.py --file path/to/copy.txt"
 
 install:
 	uv sync
